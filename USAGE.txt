@@ -43,13 +43,15 @@ ModelVersion=1.0
 上面的網址只是本機服務使用 8080 埠的例子，請填你實際使用的 API 位址。模型與其他 Sakura 參數依所用端點及服務設定；
 本插件不會替你下載模型或啟動 API。確認基礎翻譯正常後再繼續。
 
-### 端點版本與繁簡體
+### 端點版本與提示詞
 
-目前的上下文提示測試以 `ModelName=Sakura`、`ModelVersion=1.0` 的端點格式為基準。其他模型模板或版本需另外確認，不能只依 DLL 檔名認定相容。
+本專案先前的功能測試使用了**修改過的 SakuraTranslate.dll**，雖然組件版本同樣標示 `0.3.10`，但它不等同於 fkiliver/SakuraTranslator 的官方 `v0.3.10` Release 附件。
 
-SakuraTranslate 的提示詞曾經修改過，實際內容可能隨版本與建置來源不同，不能只依官方預設或儲存庫某一版的文字推定。請以實際使用的 DLL 及請求 LOG 為準。`Language=zh-TW` 是 XUnity 的語系設定，**不代表 SakuraTranslate 會自動改寫自己的提示詞**。
+已確認的差異包括：Sakura 1.0 的 system／user 改成臺灣繁體中文並加入換行規則；回覆流程新增 `TaiwanChineseConverter` 轉換；XUnity 組件引用版本也不同。[完整比對紀錄](ENDPOINT-COMPATIBILITY.md)列出來源與雜湊。
 
-本插件只替換選定對話的 system，保留原端點的 user 訊息與其他 UI 提示。確認繁簡體及換行規則時，請查看 LOG 的 system、user 與回傳譯文；已修改的提示詞不應被當成未修改的官方預設。不同 DLL 的相容性需個別確認。
+TextSourceInspector 未附帶這份修改版端點。本插件只覆蓋選定對話的 system，保留端點原有的 user 與 UI 提示；它不會自行提供該端點內新增的繁體轉換功能。`Language=zh-TW` 也不代表會自動改寫端點提示詞。
+
+上下文提示測試以 `ModelName=Sakura`、`ModelVersion=1.0` 為基準。使用官方原版、其他建置或模型模板時，請以實際初始化 LOG、system／user 請求與回傳內容確認相容性，不能只依 DLL 檔名或相同版本號推定。
 
 ## 2. 選擇並下載 DLL
 
