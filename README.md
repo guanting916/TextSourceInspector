@@ -25,9 +25,9 @@ TextSourceInspector 是獨立附加插件，透過 Harmony 連接上述翻譯流
 
 ### 端點版本與提示詞
 
-本專案先前功能測試使用的修改版 Sakura 端點，其可重建原始碼已整理至 [guanting916/SakuraTranslator 臺灣繁體版](https://github.com/guanting916/SakuraTranslator)，並發布 [v0.3.10-tw.1（Pre-release）](https://github.com/guanting916/SakuraTranslator/releases/tag/v0.3.10-tw.1)，提供 Mono 與 IL2CPP 端點 DLL。
+本專案使用的修改版 SakuraTranslator ，已整理至 [guanting916/SakuraTranslator 臺灣繁體版](https://github.com/guanting916/SakuraTranslator)，提供 Mono 與 IL2CPP 端點 DLL。
 
-臺灣繁體版將 Sakura 1.0 的 system／user 改為臺灣繁體中文，要求保留換行與空白行；回覆流程使用 OpenCC 1.1.9 `s2twp` 字典轉換簡體字與部分用語，並保留遊戲標記及分行。這些新增功能僅套用於 `ModelName=Sakura`、`ModelVersion=1.0`。改動範圍見 [FORK-CHANGES.md](https://github.com/guanting916/SakuraTranslator/blob/master/FORK-CHANGES.md)；先前測試 DLL 與上游的來源、引用版本及雜湊比對，仍保留於[完整比對紀錄](ENDPOINT-COMPATIBILITY.md)，其中的舊 DLL 雜湊不代表新版 Release 附件的雜湊。
+將 Sakura 1.0 的 system／user 改為臺灣繁體中文，要求保留換行與空白行；回覆流程使用 OpenCC 1.1.9 `s2twp` 字典轉換簡體字與部分用語，並保留遊戲標記及分行。這些新增功能僅套用於 `ModelName=Sakura`、`ModelVersion=1.0`。改動範圍見 [FORK-CHANGES.md](https://github.com/guanting916/SakuraTranslator/blob/master/FORK-CHANGES.md)。
 
 本插件負責選定對話的前文、姓名與請求紀錄，只覆蓋該對話的 system，保留端點原有的 user 與 UI 提示。臺灣繁體提示詞及 OpenCC 回覆轉換由 SakuraTranslator 臺灣繁體版提供；單獨設定 `Language=zh-TW` 不會自動改寫其他端點的提示詞或加入轉換功能。
 
