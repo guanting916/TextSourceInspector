@@ -23,44 +23,13 @@ TextSourceInspector 是獨立附加插件，透過 Harmony 連接上述翻譯流
 
 **請先確認遊戲使用 Sakura 已能正常翻譯，再安裝本插件。**
 
-到 [SakuraTranslator v0.3.10-tw.1 下載頁（Pre-release）](https://github.com/guanting916/SakuraTranslator/releases/tag/v0.3.10-tw.1)，從 **Assets** 下載符合遊戲環境的一份端點 DLL：
-
-| 遊戲環境 | Sakura 端點檔案 |
-|---|---|
-| BepInEx 5 Mono | `SakuraTranslate.dll` |
-| BepInEx 6 IL2CPP | `SakuraTranslate_IL2CPP.dll` |
-
-關閉遊戲，將原有 Sakura 端點 DLL 移到遊戲目錄外備份，再把對應的一份 DLL 放入 XUnity 的 `Translators` 資料夾，避免同時載入多份 Sakura 端點。OpenCC 字典已內嵌，不需另外安裝 OpenCC。
-
-若原本還不能翻譯，先完成上述基礎環境，
-啟動一次遊戲產生設定，再關閉遊戲設定 `BepInEx/config/AutoTranslatorConfig.ini`。
-
-設定內容的重點如下，請修改既有檔案的對應項目，不要只用這幾行覆蓋整份設定：
-
-```ini
-[Service]
-Endpoint=SakuraTranslate
-
-[General]
-Language=zh-TW
-FromLanguage=ja
-
-[Sakura]
-Endpoint=http://127.0.0.1:8080/v1/chat/completions
-ModelName=Sakura
-ModelVersion=1.0
-```
-
-上面的網址只是本機服務使用 8080 埠的例子，請填你實際使用的 API 位址。模型與其他 Sakura 參數依所用端點及服務設定；
-本插件不會替你下載模型或啟動 API。確認基礎翻譯正常後再繼續。
-
 ### 端點版本與提示詞
 
-本專案先前功能測試使用的修改版 Sakura 端點，其可重建原始碼已整理至 [guanting916/SakuraTranslator 臺灣繁體版](https://github.com/guanting916/SakuraTranslator)，並發布 [v0.3.10-tw.1（Pre-release）](https://github.com/guanting916/SakuraTranslator/releases/tag/v0.3.10-tw.1)，提供 Mono 與 IL2CPP 端點 DLL。這是修改版的獨立專案，組件版本仍為 `0.3.10.0`，但不等同於上游 fkiliver/SakuraTranslator 的 `v0.3.10` Release 附件。
+本專案先前功能測試使用的修改版 Sakura 端點，其可重建原始碼已整理至 [guanting916/SakuraTranslator 臺灣繁體版](https://github.com/guanting916/SakuraTranslator)，並發布 [v0.3.10-tw.1（Pre-release）](https://github.com/guanting916/SakuraTranslator/releases/tag/v0.3.10-tw.1)，提供 Mono 與 IL2CPP 端點 DLL。
 
 臺灣繁體版將 Sakura 1.0 的 system／user 改為臺灣繁體中文，要求保留換行與空白行；回覆流程使用 OpenCC 1.1.9 `s2twp` 字典轉換簡體字與部分用語，並保留遊戲標記及分行。這些新增功能僅套用於 `ModelName=Sakura`、`ModelVersion=1.0`。改動範圍見 [FORK-CHANGES.md](https://github.com/guanting916/SakuraTranslator/blob/master/FORK-CHANGES.md)；先前測試 DLL 與上游的來源、引用版本及雜湊比對，仍保留於[完整比對紀錄](ENDPOINT-COMPATIBILITY.md)，其中的舊 DLL 雜湊不代表新版 Release 附件的雜湊。
 
-TextSourceInspector 未附帶 Sakura 端點，需依上方步驟另外下載安裝。本插件負責選定對話的前文、姓名與請求紀錄，只覆蓋該對話的 system，保留端點原有的 user 與 UI 提示。臺灣繁體提示詞及 OpenCC 回覆轉換由 SakuraTranslator 臺灣繁體版提供；單獨設定 `Language=zh-TW` 不會自動改寫其他端點的提示詞或加入轉換功能。
+本插件負責選定對話的前文、姓名與請求紀錄，只覆蓋該對話的 system，保留端點原有的 user 與 UI 提示。臺灣繁體提示詞及 OpenCC 回覆轉換由 SakuraTranslator 臺灣繁體版提供；單獨設定 `Language=zh-TW` 不會自動改寫其他端點的提示詞或加入轉換功能。
 
 上下文提示測試以 `ModelName=Sakura`、`ModelVersion=1.0` 為基準。使用官方原版、其他建置或模型模板時，請以實際初始化 LOG、system／user 請求與回傳內容確認相容性，不能只依 DLL 檔名或相同版本號推定。
 
