@@ -49,7 +49,7 @@ ModelVersion=1.0
 
 已確認的差異包括：Sakura 1.0 的 system／user 改成臺灣繁體中文並加入換行規則；回覆流程新增 `TaiwanChineseConverter` 轉換；XUnity 組件引用版本也不同。[完整比對紀錄](ENDPOINT-COMPATIBILITY.md)列出來源與雜湊。
 
-TextSourceInspector 未附帶這份修改版端點。本插件只覆蓋選定對話的 system，保留端點原有的 user 與 UI 提示；它不會自行提供該端點內新增的繁體轉換功能。`Language=zh-TW` 也不代表會自動改寫端點提示詞。
+修改版的可重建原始碼已整理到 [guanting916/SakuraTranslator](https://github.com/guanting916/SakuraTranslator)。TextSourceInspector 未附帶這份修改版端點。本插件只覆蓋選定對話的 system，保留端點原有的 user 與 UI 提示；它不會自行提供該端點內新增的繁體轉換功能。`Language=zh-TW` 也不代表會自動改寫端點提示詞。
 
 上下文提示測試以 `ModelName=Sakura`、`ModelVersion=1.0` 為基準。使用官方原版、其他建置或模型模板時，請以實際初始化 LOG、system／user 請求與回傳內容確認相容性，不能只依 DLL 檔名或相同版本號推定。
 
