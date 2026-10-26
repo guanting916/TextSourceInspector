@@ -47,9 +47,9 @@ ModelVersion=1.0
 
 目前的上下文提示測試以 `ModelName=Sakura`、`ModelVersion=1.0` 的端點格式為基準。其他模型模板或版本需另外確認，不能只依 DLL 檔名認定相容。
 
-SakuraTranslator 官方目前的提示詞要求簡體中文；先前在特定環境使用的端點可能已修改提示詞。`Language=zh-TW` 是 XUnity 的語系設定，**不代表 SakuraTranslate 會自動改寫自己的提示詞**。
+SakuraTranslate 的提示詞曾經修改過，實際內容可能隨版本與建置來源不同，不能只依官方預設或儲存庫某一版的文字推定。請以實際使用的 DLL 及請求 LOG 為準。`Language=zh-TW` 是 XUnity 的語系設定，**不代表 SakuraTranslate 會自動改寫自己的提示詞**。
 
-本插件只替換選定對話的 system，保留原端點的 user 訊息與其他 UI 提示。若原端點的 user 或 UI 提示仍要求簡體，可能出現繁簡體不一致；請以實際請求 LOG 為準。此處列出的安裝設定不代表已解決端點提示衝突。
+本插件只替換選定對話的 system，保留原端點的 user 訊息與其他 UI 提示。確認繁簡體及換行規則時，請查看 LOG 的 system、user 與回傳譯文；已修改的提示詞不應被當成未修改的官方預設。不同 DLL 的相容性需個別確認。
 
 ## 2. 選擇並下載 DLL
 
@@ -170,4 +170,4 @@ TXT 適合用記事本閱讀；JSONL 用來保留完整資料。請查看最新�
 
 原始碼及建置方式請參閱 [BUILDING.md](BUILDING.md)。本插件透過 Harmony 連接既有翻譯流程，不改寫 XUnity 或 SakuraTranslate 的原始 DLL。
 
-本儲存庫尚未指定自己的開源授權。相關依賴適用各自授權；本儲存庫不重新授權依賴組件。
+本專案程式碼採用 [MIT License](LICENSE)，Copyright (c) 2026 guanting916。使用、修改或散布本專案時，請保留授權與版權聲明。相關依賴適用各自授權；本專案不重新授權依賴組件。
