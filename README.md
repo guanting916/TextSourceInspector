@@ -1,74 +1,151 @@
 # TextSourceInspector
 
+替 XUnity.AutoTranslator 的 Sakura 翻譯加入**選定對話的前文、說話者與請求紀錄**，目前下載版本為 **0.2.4**。它是附加插件，不是完整翻譯器，也不是 Sakura 模型或伺服器。
+
 本專案透過 **GPT6.1 SOL** 協助建置與編譯。
 
-Unity 文字來源選取、對話上下文與 Sakura 翻譯請求記錄插件，目前版本 **0.2.4**。
+## 1. 安裝前先準備
 
-這是獨立的 BepInEx 插件，依賴 [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator)。透過 Harmony 在執行時連接翻譯流程，不修改 XUnity 或 SakuraTranslate 的原始 DLL。
+1. 適用遊戲的 BepInEx 環境。
+2. [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) 及 `SakuraTranslate.dll` 翻譯端點插件。XUnity 官方下載不一定包含 SakuraTranslate，需向其提供者取得。
+3. 已啟動且可連線的 Sakura 翻譯 API 服務。
 
-## 功能
+**請先確認遊戲使用 Sakura 已能正常翻譯，再安裝本插件。**本插件不附 BepInEx、XUnity、SakuraTranslate、模型、字型或遊戲檔案。
 
-- 選取對話及姓名元件，保存各遊戲自己的來源路徑。
-- 僅選定對話附帶最多四段、合計 120 字的原文前文。
-- 姓名與文字在畫面更新後配對，避免下一句姓名覆蓋舊內容。
-- 一般前文標記為「對話／發話者」。括號段落僅標記為「括號文字／發話者」，不推定為旁白或內心話。
-- 對話使用精簡 system；user 翻譯指令保持原樣。其他 UI 維持 Sakura 預設提示。
-- TXT／JSONL 記錄實際請求、背景、姓名、回傳譯文、耗時及錯誤。
-- Unity 主要場景切換時清除記憶體中的對話歷史。
+若原本還不能翻譯，先完成基礎環境：將 SakuraTranslate 端點放在 XUnity 的 `Translators` 資料夾，啟動一次遊戲產生設定，再關閉遊戲設定 `BepInEx/config/AutoTranslatorConfig.ini`。
 
-## 原始碼
+設定內容的重點如下，請修改既有檔案的對應項目，不要只用這幾行覆蓋整份設定：
 
-| 檔案 | 用途 |
+```ini
+[Service]
+Endpoint=SakuraTranslate
+
+[General]
+Language=zh-TW
+FromLanguage=ja
+
+[Sakura]
+Endpoint=http://127.0.0.1:8080/v1/chat/completions
+```
+
+上面的網址只是本機服務使用 8080 埠的例子，請填你實際使用的 API 位址。模型與其他 Sakura 參數依所用端點及服務設定；本插件不會替你下載模型或啟動 API。確認基礎翻譯正常後再繼續。
+
+## 2. 選擇並下載 DLL
+
+到 [v0.2.4 下載頁](https://github.com/guanting916/TextSourceInspector/releases/tag/v0.2.4)，在 **Assets** 下載符合遊戲環境的一份 DLL。一般使用不需下載 `Source code` 或自行編譯。
+
+| 遊戲環境 | 檔案 |
 |---|---|
-| `src/TextSourceInspector.cs` | 文字來源選取視窗與元件檢查 |
-| `src/DialogueContextBridge.cs` | 姓名配對、上下文、提示詞與 Sakura 掛接 |
-| `src/SakuraTraceLog.cs` | 請求及結果檔案記錄 |
-| `src/TextSourceInspectorIL2CPP.cs` | IL2CPP 入口與 Unity 執行緒宿主 |
+| BepInEx 5 Mono | `TextSourceInspector.dll` |
+| BepInEx 6 IL2CPP / Il2CppInterop 1.5.3 | `TextSourceInspectorIL2CPP.dll` |
 
-## 建置
+遊戲根目錄有 `GameAssembly.dll` 通常是 IL2CPP；有 `遊戲名_Data/Managed/Assembly-CSharp.dll` 通常是 Mono。不確定時先確認遊戲適用的 BepInEx 類型，不要兩版都裝。
 
-依賴 DLL 不納入版本管理，請使用自己目標環境的組件。
+## 3. 放置檔案
 
-### Mono
+「遊戲根目錄」是遊戲 `.exe` 所在的資料夾。關閉遊戲，將對應 DLL 放進 `BepInEx/plugins`。
 
-需 Windows .NET Framework C# 編譯器、BepInEx 5 及目標遊戲的 Unity 組件。
-
-```powershell
-./build.ps1 -Target Mono -GameRoot 'D:\YourGame'
+```text
+遊戲資料夾/
+├── Game.exe
+└── BepInEx/
+    ├── plugins/
+    │   ├── 對應的文字來源插件.dll
+    │   └── XUnity.AutoTranslator/
+    │       └── Translators/
+    │           └── SakuraTranslate.dll
+    ├── config/
+    │   ├── AutoTranslatorConfig.ini
+    │   └── local.xunity.textsourceinspector.cfg
+    └── TranslationLogs/
 ```
 
-若遊戲目錄內有多個 `*_Data/Managed`，請另指定 `-ManagedDirectory`。
+`Game.exe` 與「對應的文字來源插件.dll」是示意名稱。不同 XUnity 套件的資料夾結構可能略有差異，請以原套件的 `Translators` 位置為準，不要為了符合圖示隨意移動既有檔案。
 
-### IL2CPP
+設定檔會在插件首次載入時自動建立；也可將附件的空白 `.cfg` 範本放入 `BepInEx/config`。**若已有設定，請保留，不要用空白範本覆蓋。**
 
-需 BepInEx 6、Il2CppInterop、目標遊戲產生的 `BepInEx/interop`、.NET 6 runtime DLL，以及能編譯 .NET 6 參考的 Roslyn `csc.exe`。建置時以 `IL2CPP` 編譯符號選用對應程式分支。
+## 4. 首次選取對話與姓名
 
-```powershell
-./build.ps1 -Target IL2CPP -GameRoot 'D:\YourGame' -CompilerPath 'C:\BuildTools\Roslyn\csc.exe'
+1. 啟動遊戲，進入實際顯示角色台詞的畫面。
+2. 點左上角「文字來源檢查」，展開視窗。
+3. 從文字元件清單比對畫面中的台詞，找到對話元件後按「對話」。
+4. 找到顯示角色名字的元件後按「姓名」。如果遊戲沒有獨立姓名欄，可略過。
+5. 收起視窗，推進到還沒翻譯過的新台詞。
+
+選取會保存到 `BepInEx/config/local.xunity.textsourceinspector.cfg`，同一遊戲下次通常不用重選。不同遊戲不能直接共用來源路徑；對話框或場景結構改變時可能要重新選取。
+
+選取前不會自動知道哪個文字框是對話。選取後只有該對話來源附加上下文；按鈕、選單等 UI 不會加入對話歷史。
+
+## 5. 設定項目
+
+```ini
+[Selection]
+DialoguePath =
+SpeakerPath =
+
+[Context]
+Enabled = true
+MaxHistoryLines = 4
+MaxHistoryCharacters = 120
+LogRequests = true
+
+[Diagnostics]
+DetailedSakuraLog = true
+
+[UI]
+ShowPanel = true
 ```
 
-預設使用 `GameRoot/dotnet` 的 runtime DLL，可用 `-RuntimeDirectory` 改指定路徑。
+- `DialoguePath`／`SpeakerPath`：由選取視窗自動填入，通常不用手寫。空白表示尚未選取。
+- `Enabled`：是否附加對話上下文。
+- `MaxHistoryLines`：最多帶入幾段先前原文，預設 `4`，不包含當前句。
+- `MaxHistoryCharacters`：前文合計最多 `120` 字，姓名標籤另附；前文太長時可能少於四段。
+- `LogRequests`：在 BepInEx LOG 記錄段數與耗時等摘要。
+- `DetailedSakuraLog`：儲存完整請求與回覆，預設 `true`。
+- `ShowPanel`：是否展開來源視窗；收起後仍可透過小按鈕打開。
 
-輸出位於 `bin/Mono/TextSourceInspector.dll` 或 `bin/IL2CPP/TextSourceInspectorIL2CPP.dll`。
+手動修改設定後重新啟動遊戲。通常先保留預設值，只完成來源選取即可。
 
-## 安裝及首次使用
+## 6. 如何確認上下文及查看 LOG
 
-1. 關閉遊戲，把對應 DLL 放入 `BepInEx/plugins`。
-2. 啟動遊戲，在左上角「文字來源檢查」視窗選取對話及姓名元件。
-3. 選取自動保存至 `BepInEx/config/local.xunity.textsourceinspector.cfg`。
-4. 詳細記錄位於 `BepInEx/TranslationLogs`。命中既有翻譯快取的文字不會產生 Sakura 請求紀錄。
+詳細紀錄位於遊戲目錄下：
 
-`config` 內附空白設定範本，不包含任何遊戲的元件路徑或劇情範例。
+```text
+BepInEx/TranslationLogs/Sakura-日期-時間-工作階段.txt
+BepInEx/TranslationLogs/Sakura-日期-時間-工作階段.jsonl
+```
 
-## 限制與驗證狀態
+TXT 適合用記事本閱讀；JSONL 用來保留完整資料。請查看最新紀錄中的「附帶上下文」、姓名、前文、當前原文與實際請求 JSON，確認元件選取正確。每次啟動建立新的工作階段紀錄。
 
-- 目前依 Unity 6 組件建置，不保證所有 Unity/TMP 版本均相容。
-- Mono 已有實機請求 LOG 驗證；IL2CPP 已完成編譯與依賴檢查，尚未完成實機驗證。
-- 未新增同場景劇情切換、讀檔、新遊戲的專用清除或舊請求失效處理。
-- 不改翻譯快取鍵，不會自動重翻舊快取。
-- 不保證模型不會翻錯人稱；括號文字標記不代表已理解文字的語意類型。
-- 字型插件為另外的專案，本儲存庫不包含字型、遊戲檔案或第三方 DLL。
+只翻譯 user 中的當前文本；前文及姓名動態放入 system 作為參考，不會內建固定劇情。括號段落僅標為「括號文字／發話者」，不判定為旁白或內心話。
 
-## 授權
+記錄中的譯文是 XUnity 後處理之前的結果，可能與畫面最終文字略有不同。
 
-本儲存庫尚未指定自己的開源授權；公開散布前需先決定授權。相關依賴適用各自的授權，本儲存庫不重新授權依賴組件。
+## 常見問題
+
+| 狀況 | 檢查方式 |
+|---|---|
+| 沒有左上角按鈕或設定檔 | 查看 `BepInEx/LogOutput.log`，確認插件、BepInEx 類型與依賴已載入。 |
+| 遊戲完全沒有翻譯 | 先確認 XUnity、SakuraTranslate、API 位址及服務可用；本插件不負責建立基礎翻譯服務。 |
+| 請求沒有前文 | 確認 `Enabled = true` 且選對了對話元件；剛啟動或清除歷史後，前文也可能不足四段。 |
+| 沒有新的請求紀錄 | 已翻過的文字可能直接命中 XUnity 快取，不會再次請求 Sakura；請使用未翻譯的新台詞檢查。 |
+| 更新提示後仍看到舊譯 | 本插件不會清除既有快取，舊譯可能繼續被使用。 |
+| 姓名或內容不對 | 重新比對畫面與選定元件；來源欄應是角色姓名，不是其他 UI。 |
+| LOG 顯示掛接失敗 | XUnity、SakuraTranslate 或 Unity 的版本介面可能不同，請依 LOG 處理，不要只更改提示詞。 |
+
+## 現有行為與限制
+
+- Unity 主要場景切換時，清除記憶體中的歷史。
+- 同一 Unity 場景內的劇情切換、讀檔、新遊戲沒有專用清除機制。
+- 不改快取鍵，不會自動重翻舊譯；模型仍可能翻錯人稱。
+- 來源以目前選定的元件為準，尚非自動支援所有對話框或所有 Unity/TMP 版本。
+
+## 更新、停用及移除
+
+更新時先關閉遊戲，替換對應 DLL 並保留設定。要恢復原本翻譯流程，可先關閉遊戲，移走本插件 DLL；不要因此移除 XUnity 或整個 BepInEx。
+
+## 開發與授權
+
+原始碼及建置方式請參閱 [BUILDING.md](BUILDING.md)。本插件透過 Harmony 連接既有翻譯流程，不改寫 XUnity 或 SakuraTranslate 的原始 DLL。
+
+本儲存庫尚未指定自己的開源授權。相關依賴適用各自授權；本儲存庫不重新授權依賴組件。
