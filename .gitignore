@@ -1,0 +1,11 @@
+bin/
+obj/
+Dependencies/
+.vs/
+*.dll
+*.pdb
+*.user
+TranslationLogs/
+*.jsonl
+*.ttf
+*.TTF
