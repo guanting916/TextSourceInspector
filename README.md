@@ -9,19 +9,30 @@
 | 專案 | 本插件使用的功能 |
 |---|---|
 | [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) | 遊戲文字擷取與翻譯流程 |
-| [fkiliver/SakuraTranslator](https://github.com/fkiliver/SakuraTranslator) | Sakura 翻譯端點 |
+| [guanting916/SakuraTranslator 臺灣繁體版](https://github.com/guanting916/SakuraTranslator) | Sakura 翻譯端點，提供臺灣繁體提示詞、換行規則與 OpenCC 回覆轉換 |
+
+臺灣繁體版基於上游 [fkiliver/SakuraTranslator](https://github.com/fkiliver/SakuraTranslator)。以下安裝說明以臺灣繁體版 `v0.3.10-tw.1` 為準；上游原版與其他建置的相容性請參閱下方「端點版本與提示詞」。
 
 TextSourceInspector 是獨立附加插件，透過 Harmony 連接上述翻譯流程，擴充選定對話的上下文與請求紀錄。本插件未附帶上述專案的 DLL，請依各專案說明另行安裝。
 
 ## 1. 安裝前先準備
 
 1. 適用遊戲的 BepInEx 環境。
-2. [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) 與 [fkiliver/SakuraTranslator](https://github.com/fkiliver/SakuraTranslator)。
+2. [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) 與 [SakuraTranslator 臺灣繁體版](https://github.com/guanting916/SakuraTranslator)。臺灣繁體版目前以 XUnity **5.6.2** 的對應組件建置。
 3. 已啟動且可連線的 Sakura 翻譯 API 服務。
 
 **請先確認遊戲使用 Sakura 已能正常翻譯，再安裝本插件。**
 
-若原本還不能翻譯，先完成基礎環境：將 SakuraTranslate 端點放在 XUnity 的 `Translators` 資料夾，
+到 [SakuraTranslator v0.3.10-tw.1 下載頁（Pre-release）](https://github.com/guanting916/SakuraTranslator/releases/tag/v0.3.10-tw.1)，從 **Assets** 下載符合遊戲環境的一份端點 DLL：
+
+| 遊戲環境 | Sakura 端點檔案 |
+|---|---|
+| BepInEx 5 Mono | `SakuraTranslate.dll` |
+| BepInEx 6 IL2CPP | `SakuraTranslate_IL2CPP.dll` |
+
+關閉遊戲，將原有 Sakura 端點 DLL 移到遊戲目錄外備份，再把對應的一份 DLL 放入 XUnity 的 `Translators` 資料夾，避免同時載入多份 Sakura 端點。OpenCC 字典已內嵌，不需另外安裝 OpenCC。
+
+若原本還不能翻譯，先完成上述基礎環境，
 啟動一次遊戲產生設定，再關閉遊戲設定 `BepInEx/config/AutoTranslatorConfig.ini`。
 
 設定內容的重點如下，請修改既有檔案的對應項目，不要只用這幾行覆蓋整份設定：
@@ -45,11 +56,11 @@ ModelVersion=1.0
 
 ### 端點版本與提示詞
 
-本專案先前的功能測試使用了**修改過的 SakuraTranslate.dll**，雖然組件版本同樣標示 `0.3.10`，但它不等同於 fkiliver/SakuraTranslator 的官方 `v0.3.10` Release 附件。
+本專案先前功能測試使用的修改版 Sakura 端點，其可重建原始碼已整理至 [guanting916/SakuraTranslator 臺灣繁體版](https://github.com/guanting916/SakuraTranslator)，並發布 [v0.3.10-tw.1（Pre-release）](https://github.com/guanting916/SakuraTranslator/releases/tag/v0.3.10-tw.1)，提供 Mono 與 IL2CPP 端點 DLL。這是修改版的獨立專案，組件版本仍為 `0.3.10.0`，但不等同於上游 fkiliver/SakuraTranslator 的 `v0.3.10` Release 附件。
 
-已確認的差異包括：Sakura 1.0 的 system／user 改成臺灣繁體中文並加入換行規則；回覆流程新增 `TaiwanChineseConverter` 轉換；XUnity 組件引用版本也不同。[完整比對紀錄](ENDPOINT-COMPATIBILITY.md)列出來源與雜湊。
+臺灣繁體版將 Sakura 1.0 的 system／user 改為臺灣繁體中文，要求保留換行與空白行；回覆流程使用 OpenCC 1.1.9 `s2twp` 字典轉換簡體字與部分用語，並保留遊戲標記及分行。這些新增功能僅套用於 `ModelName=Sakura`、`ModelVersion=1.0`。改動範圍見 [FORK-CHANGES.md](https://github.com/guanting916/SakuraTranslator/blob/master/FORK-CHANGES.md)；先前測試 DLL 與上游的來源、引用版本及雜湊比對，仍保留於[完整比對紀錄](ENDPOINT-COMPATIBILITY.md)，其中的舊 DLL 雜湊不代表新版 Release 附件的雜湊。
 
-修改版的可重建原始碼已整理到 [guanting916/SakuraTranslator](https://github.com/guanting916/SakuraTranslator)。TextSourceInspector 未附帶這份修改版端點。本插件只覆蓋選定對話的 system，保留端點原有的 user 與 UI 提示；它不會自行提供該端點內新增的繁體轉換功能。`Language=zh-TW` 也不代表會自動改寫端點提示詞。
+TextSourceInspector 未附帶 Sakura 端點，需依上方步驟另外下載安裝。本插件負責選定對話的前文、姓名與請求紀錄，只覆蓋該對話的 system，保留端點原有的 user 與 UI 提示。臺灣繁體提示詞及 OpenCC 回覆轉換由 SakuraTranslator 臺灣繁體版提供；單獨設定 `Language=zh-TW` 不會自動改寫其他端點的提示詞或加入轉換功能。
 
 上下文提示測試以 `ModelName=Sakura`、`ModelVersion=1.0` 為基準。使用官方原版、其他建置或模型模板時，請以實際初始化 LOG、system／user 請求與回傳內容確認相容性，不能只依 DLL 檔名或相同版本號推定。
 
@@ -77,7 +88,7 @@ ModelVersion=1.0
     │   ├── 對應的文字來源插件.dll
     │   └── XUnity.AutoTranslator/
     │       └── Translators/
-    │           └── SakuraTranslate.dll
+    │           └── SakuraTranslate.dll 或 SakuraTranslate_IL2CPP.dll（擇一）
     ├── config/
     │   ├── AutoTranslatorConfig.ini
     │   └── local.xunity.textsourceinspector.cfg
