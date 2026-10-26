@@ -1,5 +1,7 @@
 # TextSourceInspector
 
+本專案透過 **GPT6.1 SOL** 協助建置與編譯。
+
 Unity 文字來源選取、對話上下文與 Sakura 翻譯請求記錄插件，目前版本 **0.2.4**。
 
 這是獨立的 BepInEx 插件，依賴 [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator)。透過 Harmony 在執行時連接翻譯流程，不修改 XUnity 或 SakuraTranslate 的原始 DLL。
