@@ -4,10 +4,19 @@
 
 本專案透過 **GPT6.1 SOL** 協助建置與編譯。
 
+## 依賴專案
+
+| 專案 | 本插件使用的功能 |
+|---|---|
+| [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) | 遊戲文字擷取與翻譯流程 |
+| [fkiliver/SakuraTranslator](https://github.com/fkiliver/SakuraTranslator) | Sakura 翻譯端點（SakuraTranslate.dll） |
+
+TextSourceInspector 是獨立附加插件，透過 Harmony 連接上述翻譯流程，擴充選定對話的上下文與請求紀錄。本插件未附帶上述專案的 DLL，請依各專案說明另行安裝。
+
 ## 1. 安裝前先準備
 
 1. 適用遊戲的 BepInEx 環境。
-2. [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) 及 `SakuraTranslate.dll` 翻譯端點插件。XUnity 官方下載不一定包含 SakuraTranslate，需向其提供者取得。
+2. [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) 與 [fkiliver/SakuraTranslator](https://github.com/fkiliver/SakuraTranslator)。請從 SakuraTranslator 的 [Releases](https://github.com/fkiliver/SakuraTranslator/releases) 取得 `SakuraTranslate.dll`；XUnity 官方下載不一定包含它。
 3. 已啟動且可連線的 Sakura 翻譯 API 服務。
 
 **請先確認遊戲使用 Sakura 已能正常翻譯，再安裝本插件。**本插件不附 BepInEx、XUnity、SakuraTranslate、模型、字型或遊戲檔案。
