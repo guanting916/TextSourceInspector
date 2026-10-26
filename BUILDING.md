@@ -34,3 +34,7 @@
 預設使用 `GameRoot/dotnet` 的 runtime DLL，可用 `-RuntimeDirectory` 改指定路徑。
 
 輸出位於 `bin/Mono/TextSourceInspector.dll` 或 `bin/IL2CPP/TextSourceInspectorIL2CPP.dll`。
+
+## 端點介面相容性
+
+DialogueContextBridge 透過反射掛接 SakuraTranslateEndpoint 的 Translate、MakeRequestStr、狀態機 MoveNext，以及 TranslationContext 的回呼欄位。這些是具體版本的內部介面，僅名稱相同不保證相容。更換 SakuraTranslate 或 XUnity 版本後，應先確認初始化 LOG、實際請求與回覆；不能僅以編譯成功認定執行時掛接正常。

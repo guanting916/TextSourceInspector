@@ -36,10 +36,20 @@ FromLanguage=ja
 
 [Sakura]
 Endpoint=http://127.0.0.1:8080/v1/chat/completions
+ModelName=Sakura
+ModelVersion=1.0
 ```
 
 上面的網址只是本機服務使用 8080 埠的例子，請填你實際使用的 API 位址。模型與其他 Sakura 參數依所用端點及服務設定；
 本插件不會替你下載模型或啟動 API。確認基礎翻譯正常後再繼續。
+
+### 端點版本與繁簡體
+
+目前的上下文提示測試以 `ModelName=Sakura`、`ModelVersion=1.0` 的端點格式為基準。其他模型模板或版本需另外確認，不能只依 DLL 檔名認定相容。
+
+SakuraTranslator 官方目前的提示詞要求簡體中文；先前在特定環境使用的端點可能已修改提示詞。`Language=zh-TW` 是 XUnity 的語系設定，**不代表 SakuraTranslate 會自動改寫自己的提示詞**。
+
+本插件只替換選定對話的 system，保留原端點的 user 訊息與其他 UI 提示。若原端點的 user 或 UI 提示仍要求簡體，可能出現繁簡體不一致；請以實際請求 LOG 為準。此處列出的安裝設定不代表已解決端點提示衝突。
 
 ## 2. 選擇並下載 DLL
 
