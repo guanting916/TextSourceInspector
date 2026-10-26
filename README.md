@@ -1,7 +1,7 @@
 # TextSourceInspector
 
-替 XUnity.AutoTranslator 的 Sakura 翻譯加入**選定對話的前文、說話者與請求紀錄**，目前下載版本為 **0.2.4**。
-本專案透過 **GPT6.1 SOL** 協助建置與編譯，是附加插件，不是完整翻譯器。
+本專案替 XUnity.AutoTranslator 的 Sakura 翻譯加入**選定對話的前文、說話者與請求紀錄**。
+程式透過 **GPT6.1 SOL** 協助建置與編譯，是附加插件，不是完整翻譯器。
 
 
 ## 依賴專案
