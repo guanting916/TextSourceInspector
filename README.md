@@ -1,27 +1,28 @@
 # TextSourceInspector
 
-替 XUnity.AutoTranslator 的 Sakura 翻譯加入**選定對話的前文、說話者與請求紀錄**，目前下載版本為 **0.2.4**。它是附加插件，不是完整翻譯器，也不是 Sakura 模型或伺服器。
+替 XUnity.AutoTranslator 的 Sakura 翻譯加入**選定對話的前文、說話者與請求紀錄**，目前下載版本為 **0.2.4**。
+本專案透過 **GPT6.1 SOL** 協助建置與編譯，是附加插件，不是完整翻譯器。
 
-本專案透過 **GPT6.1 SOL** 協助建置與編譯。
 
 ## 依賴專案
 
 | 專案 | 本插件使用的功能 |
 |---|---|
 | [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) | 遊戲文字擷取與翻譯流程 |
-| [fkiliver/SakuraTranslator](https://github.com/fkiliver/SakuraTranslator) | Sakura 翻譯端點（SakuraTranslate.dll） |
+| [fkiliver/SakuraTranslator](https://github.com/fkiliver/SakuraTranslator) | Sakura 翻譯端點 |
 
 TextSourceInspector 是獨立附加插件，透過 Harmony 連接上述翻譯流程，擴充選定對話的上下文與請求紀錄。本插件未附帶上述專案的 DLL，請依各專案說明另行安裝。
 
 ## 1. 安裝前先準備
 
 1. 適用遊戲的 BepInEx 環境。
-2. [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) 與 [fkiliver/SakuraTranslator](https://github.com/fkiliver/SakuraTranslator)。請從 SakuraTranslator 的 [Releases](https://github.com/fkiliver/SakuraTranslator/releases) 取得 `SakuraTranslate.dll`；XUnity 官方下載不一定包含它。
+2. [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) 與 [fkiliver/SakuraTranslator](https://github.com/fkiliver/SakuraTranslator)。
 3. 已啟動且可連線的 Sakura 翻譯 API 服務。
 
-**請先確認遊戲使用 Sakura 已能正常翻譯，再安裝本插件。**本插件不附 BepInEx、XUnity、SakuraTranslate、模型、字型或遊戲檔案。
+**請先確認遊戲使用 Sakura 已能正常翻譯，再安裝本插件。**
 
-若原本還不能翻譯，先完成基礎環境：將 SakuraTranslate 端點放在 XUnity 的 `Translators` 資料夾，啟動一次遊戲產生設定，再關閉遊戲設定 `BepInEx/config/AutoTranslatorConfig.ini`。
+若原本還不能翻譯，先完成基礎環境：將 SakuraTranslate 端點放在 XUnity 的 `Translators` 資料夾，
+啟動一次遊戲產生設定，再關閉遊戲設定 `BepInEx/config/AutoTranslatorConfig.ini`。
 
 設定內容的重點如下，請修改既有檔案的對應項目，不要只用這幾行覆蓋整份設定：
 
@@ -37,7 +38,8 @@ FromLanguage=ja
 Endpoint=http://127.0.0.1:8080/v1/chat/completions
 ```
 
-上面的網址只是本機服務使用 8080 埠的例子，請填你實際使用的 API 位址。模型與其他 Sakura 參數依所用端點及服務設定；本插件不會替你下載模型或啟動 API。確認基礎翻譯正常後再繼續。
+上面的網址只是本機服務使用 8080 埠的例子，請填你實際使用的 API 位址。模型與其他 Sakura 參數依所用端點及服務設定；
+本插件不會替你下載模型或啟動 API。確認基礎翻譯正常後再繼續。
 
 ## 2. 選擇並下載 DLL
 
@@ -48,7 +50,8 @@ Endpoint=http://127.0.0.1:8080/v1/chat/completions
 | BepInEx 5 Mono | `TextSourceInspector.dll` |
 | BepInEx 6 IL2CPP / Il2CppInterop 1.5.3 | `TextSourceInspectorIL2CPP.dll` |
 
-遊戲根目錄有 `GameAssembly.dll` 通常是 IL2CPP；有 `遊戲名_Data/Managed/Assembly-CSharp.dll` 通常是 Mono。不確定時先確認遊戲適用的 BepInEx 類型，不要兩版都裝。
+遊戲根目錄有 `GameAssembly.dll` 通常是 IL2CPP；有 `遊戲名_Data/Managed/Assembly-CSharp.dll` 通常是 Mono。
+不確定時先確認遊戲適用的 BepInEx 類型，不要兩版都裝。
 
 ## 3. 放置檔案
 
